@@ -10,6 +10,8 @@ import {
     Rubik_700Bold,
 } from "@expo-google-fonts/rubik"
 
+import { Loading } from "@/components/loading"
+
 export default function Layout() {
     const [fontsLoaded] = useFonts({
         Rubik_600SemiBold,
@@ -17,6 +19,10 @@ export default function Layout() {
         Rubik_500Medium,
         Rubik_700Bold,
     })
+
+    if (!fontsLoaded) {
+        return <Loading />
+    }
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
