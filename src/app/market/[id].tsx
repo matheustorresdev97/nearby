@@ -4,8 +4,9 @@ import { Redirect, router, useLocalSearchParams } from "expo-router";
 
 
 import { api } from "@/services/api"
-import { PropsDetails } from "@/components/market/details";
+import { Details, PropsDetails } from "@/components/market/details";
 import { Cover } from "@/components/market/cover";
+import { Coupon } from "@/components/market/coupon";
 
 
 type DataProps = PropsDetails & {
@@ -53,6 +54,8 @@ export default function Market() {
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Cover uri={data.cover} />
+                <Details data={data} />
+                {coupon && <Coupon code={coupon} />}
             </ScrollView>
         </View>
     )
