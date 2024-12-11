@@ -22,7 +22,7 @@ export const s = StyleSheet.create({
     },
     containerSelected: {
         backgroundColor: colors.green.base,
-        borderWidth: 0,
+        borderColor: colors.gray[300],
     },
     nameSelected: {
         color: colors.gray[100],
