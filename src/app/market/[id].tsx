@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react"
 import { View, Alert, Modal, StatusBar, ScrollView } from "react-native"
-import { Redirect, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, Redirect } from "expo-router"
+import { useCameraPermissions, CameraView } from "expo-camera"
 
-
-import { api } from "@/services/api"
 import { Details, PropsDetails } from "@/components/market/details";
 import { Cover } from "@/components/market/cover";
 import { Coupon } from "@/components/market/coupon";
+import { Button } from "@/components/button";
 
+import { api } from "@/services/api"
 
 type DataProps = PropsDetails & {
     cover: string
@@ -20,9 +21,11 @@ export default function Market() {
     const [couponIsFetching, setCouponIsFetching] = useState(false)
     const [isVisibleCameraModal, setIsVisibleCameraModal] = useState(false)
 
+    const [_, requestPermission] = useCameraPermissions()
     const params = useLocalSearchParams<{ id: string }>()
 
-    console.log(params)
+    const qrLock = useRef(false)
+    console.log(params.id)
 
     async function fetchMarket() {
         try {
@@ -39,6 +42,20 @@ export default function Market() {
             ])
         }
     }
+
+    async function handleOpenCamera() {
+        try {
+          const { granted } = await requestPermission()
+          if (!granted) {
+            return Alert.alert("Câmera", "Você precisa habilitar o uso da câmera")
+          }
+          qrLock.current = false
+          setIsVisibleCameraModal(true)
+        } catch (error) {
+          console.log(error)
+          Alert.alert("Câmera", "Não foi possível utilizar a câmera")
+        }
+      }
 
     useEffect(() => {
         fetchMarket()
@@ -57,6 +74,12 @@ export default function Market() {
                 <Details data={data} />
                 {coupon && <Coupon code={coupon} />}
             </ScrollView>
+
+            <View style={{ padding: 32 }}>
+                <Button onPress={handleOpenCamera}>
+                    <Button.Title>Ler QR Code</Button.Title>
+                </Button>
+            </View>
         </View>
     )
 }
